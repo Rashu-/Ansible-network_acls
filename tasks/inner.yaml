@@ -1,0 +1,26 @@
+---
+
+- name: Configure acls
+  nxos_acl:
+    name: "{{ outer_item.key }}"
+    state: "{{ item.value.state | default(omit) }}"    
+    action: "{{ item.value.action | default(omit) }}"
+    seq: "{{ item.key | default(omit) }}"
+    src: "{{ item.value.source | default(omit) }}"
+    src_port1: "{{ item.value.src_port1 | default(omit) }}"
+    src_port2: "{{ item.value.src_port2 | default(omit) }}"    
+    src_port_op : "{{ item.value.src_port_op | default(omit) }}"
+    dest: "{{ item.value.destination | default(omit) }}"
+    dest_port1: "{{ item.value.dest_port1 | default(omit) }}"
+    dest_port2: "{{ item.value.dest_port2 | default(omit) }}"
+    dest_port_op : "{{ item.value.dest_port_op | default(omit) }}"
+    log: "{{ item.value.log | default(omit) }}"
+    proto: "{{ item.value.proto | default(omit) }}"
+    remark: "{{ item.value.remark | default(omit) }}"
+  loop: "{{ outer_item.value | dict2items }}"
+  when: >
+    ansible_network_os == 'nxos' and
+    outer_item.value is defined 
+  tags: 
+    - acl_config
+    - nxos
